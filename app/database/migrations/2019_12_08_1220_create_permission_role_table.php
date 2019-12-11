@@ -1,0 +1,13 @@
+<?php
+
+return "
+CREATE TABLE IF NOT EXISTS permission_role (
+    id INT UNSIGNED AUTO_INCREMENT NOT NULL,
+    role_id INT UNSIGNED,
+    permission_id INT UNSIGNED,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    FOREIGN KEY (permission_id) REFERENCES permissions (id),
+    FOREIGN KEY (role_id) REFERENCES roles (id)
+)";
