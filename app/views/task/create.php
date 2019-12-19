@@ -24,6 +24,6 @@
     </div>
 
     <input type="hidden" name="_method" value="create">
-    <button class="btn btn-outline-primary" type="submit">Добавить задачу</button>
+    <button class="btn btn-secondary" type="submit">Добавить задачу</button>
 
 </form><br>

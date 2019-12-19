@@ -30,5 +30,5 @@
     <input type="hidden" name="_method" value="put">
     <input type="hidden" name="task_id" value="<?php echo $value['task_id']?>">
 
-    <button class="btn btn-outline-primary" type="submit">Применить</button>
+    <button class="btn btn-secondary" type="submit">Применить</button>
 </form><br>

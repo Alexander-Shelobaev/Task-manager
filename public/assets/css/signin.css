@@ -71,36 +71,4 @@ body {
   text-align: justify;
 }
 
-.checkbox.checkbox-css {
-  position: relative;
-  line-height: 16px;
-  padding-top: 7px;
-}
 
-.checkbox.checkbox-css input {
-  display: none;
-}
-
-.checkbox.checkbox-css label {
-  padding-left: 24px;
-  margin: 0;
-}
-
-.checkbox.checkbox-css label:before {
-  border: 1px solid #ced4da;
-  border-radius: 4px;
-  background: #fff;
-}
-
-.checkbox.checkbox-css input:checked+label:after, .checkbox.checkbox-css label:before {
-  position: absolute;
-  left: 0;
-  top: 7px;
-  width: 16px;
-  height: 16px;
-  content: '';
-}
-
-.checkbox.checkbox-css label {
-  cursor: pointer;
-}

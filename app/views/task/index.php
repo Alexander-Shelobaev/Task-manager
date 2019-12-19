@@ -87,11 +87,7 @@
                     ?>">
                     <a href="tasks?<?php echo $sort_status ?>">Статус</a>
                 </th>
-                <?php if (isset($_SESSION['logged_user']['login'])) : ?>
-                    <?php if ($_SESSION['logged_user']['role'] === 'admin') : ?>
-                        <th>Действие</th>
-                    <?php endif ?>
-                <?php endif ?>
+                <th class="width-1">Действие</th>
             </tr>
         </thead>
         <?php foreach($task_list as $value): ?>
@@ -104,24 +100,20 @@
                     <?php echo $value['edited_by_admin'] ?
                      'Отредактировано администратором' : '';?>
                 </td>
-                <?php if (isset($_SESSION['logged_user']['login'])) : ?>
-                    <?php if ($_SESSION['logged_user']['role'] === 'admin') : ?>
-                        <td class="action">
-                            <div class="btn-group" role="group" aria-label="Basic example">
-                                <a class="btn btn-secondary" href="tasks/edit/<?php echo $value['task_id'];?>"
-                                data-toggle="tooltip" data-placement="top" title="Редактировать">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <a onclick="if(confirm('Удалить?')){ return true } else { return false }" 
-                                class="btn btn-secondary" 
-                                href="tasks/delete/<?php echo $value['task_id'];?>" 
-                                data-toggle="tooltip" data-placement="top" title="Удалить">
-                                    <i class="fas fa-trash"></i>
-                                </a>
-                            </div>
-                        </td>
-                    <?php endif ?>
-                <?php endif ?>
+                <td class="action">
+                    <div class="btn-group" role="group" aria-label="Basic example">
+                        <a class="btn btn-secondary" href="tasks/edit/<?php echo $value['task_id'];?>"
+                        data-toggle="tooltip" data-placement="top" title="Редактировать">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a onclick="if(confirm('Удалить?')){ return true } else { return false }" 
+                        class="btn btn-secondary" 
+                        href="tasks/delete/<?php echo $value['task_id'];?>" 
+                        data-toggle="tooltip" data-placement="top" title="Удалить">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </div>
+                </td>
             </tr>
         <?php endforeach; ?>
     </table>
@@ -144,4 +136,4 @@
     </div>
 </div> 
 
-<p><a class="btn btn-dark" href="tasks/create"><i class="fas fa-plus-circle"></i> Создать новую задачу</a></p>
+<p><a class="btn btn-secondary" href="tasks/create"><i class="fas fa-plus-circle"></i> Создать новую задачу</a></p>

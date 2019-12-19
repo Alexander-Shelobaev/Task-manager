@@ -56,18 +56,12 @@ class Router
                     $controller = new $path($this->params);
                     $controller->$action();
                 } else {
-                    //echo "не найден метод контролера";
-                    //exit;
                     View::errorCode(404); // не найден метод контролера
                 }
             } else {
-                //echo "не найден контролер";
-                //exit;
                 View::errorCode(404); // не найден контролер
             }
         } else {
-            //echo "не найден маршрут";
-            //exit;
             View::errorCode(404); // не найден маршрут
         }
     }

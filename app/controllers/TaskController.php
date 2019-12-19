@@ -10,6 +10,9 @@ class TaskController extends Controller
 
     use Gate;
 
+    /**
+     * Выводит список всех задач
+     */
     public function indexAction()
     {
         // Проверяем полученные данные от пользователя
@@ -23,25 +26,12 @@ class TaskController extends Controller
         $params = ['where' => $where, 'from' => $from, 'limit' => $limit];
 
         // Выполняем запрос к БД
-        //$task_list = $this->model->getTasks($params);
         $task_list = $this->model->getTasks($params, $sort);
 
-
-        // Формируем данные для отображения на странице
-        // Формируем сортировку по возрастания и по убыванию
-        $sort_name = 'sort=name-asc';
-        $sort_email = 'sort=email-asc';
-        $sort_status = 'sort=status-asc';
-
-        if (isset($_GET["sort"]) and $_GET["sort"] === 'name-asc') {
-            $sort_name = 'sort=name-desc';
-        }
-        if (isset($_GET["sort"]) and $_GET["sort"] === 'email-asc') {
-            $sort_email = 'sort=email-desc';
-        }
-        if (isset($_GET["sort"]) and $_GET["sort"] === 'status-asc') {
-            $sort_status = 'sort=status-desc';
-        }
+        // Формируем параметры для сортировки по возрастания и по убыванию
+        $sort_name = (isset($_GET["sort"]) and $_GET["sort"] === 'name-asc') ? 'sort=name-desc' : 'sort=name-asc';
+        $sort_email = (isset($_GET["sort"]) and $_GET["sort"] === 'email-asc') ? 'sort=email-desc' : 'sort=email-asc';
+        $sort_status = (isset($_GET["sort"]) and $_GET["sort"] === 'status-asc')?'sort=status-desc':'sort=status-asc';
 
         // Обрабарываем данные из get запроса
         $pagination_last_url = '';
@@ -87,7 +77,6 @@ class TaskController extends Controller
             }
         }
 
-
         // Собираем пагинацию
         $pagination = '';
         $params = ['where' => $where];
@@ -113,7 +102,8 @@ class TaskController extends Controller
             } else {
                 $active = '';
             }
-            $pagination .= "<li class='page-item $active'><a class='page-link' href='tasks?page=$i$pagination_last_url'>$i</a></li>";
+            $pagination .= "<li class='page-item $active'>";
+            $pagination .= "<a class='page-link' href='tasks?page=$i$pagination_last_url'>$i</a></li>";
         }
 
         $next = $page + 1;
@@ -136,12 +126,8 @@ class TaskController extends Controller
         $data_tables_info .= 'Отображено с '.$from_data_tables_info;
         $data_tables_info .= ' по '.$limit_data_tables_info.' из '.$count_tasks.' записей';
 
-        // 
         $where = trim($where, '%');
-
-        
         $sorting = $sort;
-        
 
         // Формируем переменные для передаче на страницу
         $vars = [
@@ -167,6 +153,9 @@ class TaskController extends Controller
 
 
 
+    /**
+     * Создает новую задачу
+     */
     public function createAction()
     {
         if ($_SERVER["REQUEST_METHOD"] == "POST" and $_POST["_method"] == "create") {
@@ -205,18 +194,15 @@ class TaskController extends Controller
                 $res = $this->model->createTask($params);
                 if ($res) {
                     $_SESSION['success'] = 'Добавление задачи прошло успешно';
-                    header("Location: /tasks");
-                    exit;
+                    $this->view->redirect('/tasks');
                 } else {
                     $_SESSION['error'] = 'Ошибка при добавлении задачи';
-                    header("Location: /tasks/create");
-                    exit;
+                    $this->view->redirect('/tasks/create');
                 }
             } else {
                 // Выводим последнюю ошибку
                 $_SESSION['error'] = array_shift($errors);
-                header("Location: /tasks/create");
-                exit;
+                $this->view->redirect('/tasks/create');
             }
 
         }
@@ -231,22 +217,30 @@ class TaskController extends Controller
 
 
 
+    /**
+     * Отображает форму правки задачи
+     */
     public function editAction()
     {
         // Проверка права пользователя на доступ к разделу.
-        if (!$this->accessCheck($_SESSION['logged_user']['login'], ['View_task', 'Edit_task'])) {
+        if ($this->accessCheck(['View_task', 'Edit_task'])) {
             $_SESSION['error'] = 'У вас нет на это прав, обратитесь к администратору.';
-            header("Location: /tasks");
-            exit;
+            $this->view->redirect('/tasks');
         }
 
+        // Проверяем, что задачу с $id существует
+        $params = ['id' => $this->route_params['id']];
+        if (!$this->model->isTaskExists($params)) {
+            $_SESSION['error'] = 'Ошибка при удалении задачи';
+            $this->view->redirect('/tasks');
+        }
+
+        // Получаем из БД задачу с $id
         $params = ['id' => $this->route_params['id']];
         $result = $this->model->getTask($params);
 
         // Формируем переменные для передаче на страницу
-        $vars = [
-            'value' => $result,
-        ];
+        $vars = ['value' => $result];
         // Устанавливаем заголовок страницы
         $title = 'Редактирование задачи | Task manager';
         // Устанавливаем имя шаблона
@@ -257,13 +251,15 @@ class TaskController extends Controller
 
 
 
+    /**
+     * Обновляет задачу
+     */
     public function updateAction()
     {
         // Проверка права пользователя на доступ к разделу.
-        if (!$this->accessCheck($_SESSION['logged_user']['login'], ['View_task', 'Edit_task'])) {
+        if ($this->accessCheck(['View_task', 'Edit_task'])) {
             $_SESSION['error'] = 'У вас нет на это прав, обратитесь к администратору.';
-            header("Location: /tasks");
-            exit;
+            $this->view->redirect('/tasks');
         }
 
         if ($_SERVER["REQUEST_METHOD"] == "POST" and $_POST["_method"] == "put") {
@@ -310,18 +306,15 @@ class TaskController extends Controller
           
                 if ($res) {
                     $_SESSION['success'] = 'Обновление задачи прошло успешно';
-                    header("Location: /tasks");
-                    exit;
+                    $this->view->redirect('/tasks');
                 } else {
                     $_SESSION['error'] = 'Ошибка при обновлении задачи';
-                    header("Location: /tasks/edit"."/".$task_id);
-                    exit;
+                    $this->view->redirect('/tasks/edit/' . $task_id);
                 }
 
             } else {
                 $_SESSION['error'] = array_shift($errors);
-                header("Location: /tasks/edit"."/".$task_id);
-                exit;
+                $this->view->redirect('/tasks/edit/' . $task_id);
             }
             
         }
@@ -335,25 +328,28 @@ class TaskController extends Controller
     }
 
 
-
+    /**
+     * Удаляет задачу
+     */
     public function deleteAction()
     {
         // Проверка права пользователя на доступ к разделу.
-        if (!$this->accessCheck($_SESSION['logged_user']['login'], ['View_task', 'Del_task'])) {
+        if ($this->accessCheck(['View_task', 'Del_task'])) {
             $_SESSION['error'] = 'У вас нет на это прав, обратитесь к администратору.';
-            header("Location: /tasks");
-            exit;
+            $this->view->redirect('/tasks');
         }
+
+        // Проверяем, что задачу с $id существует
         $params = ['id' => $this->route_params['id']];
         if (!$this->model->isTaskExists($params)) {
             $_SESSION['error'] = 'Ошибка при удалении задачи';
-            header("Location: /tasks");
-            exit;
+            $this->view->redirect('/tasks');
         }
+
+        // Удаляем задачу
         $this->model->taskDelete($params);
         $_SESSION['success'] = 'Удаление задачи прошло успешно';
-        header("Location: /tasks");
-        exit;
+        $this->view->redirect('/tasks');
     }
 
 }

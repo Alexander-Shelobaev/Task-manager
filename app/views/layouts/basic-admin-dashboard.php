@@ -12,7 +12,7 @@
 </head>
 <body>
     <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
-        <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="/">Task manager</a>
+        <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="/"> Task manager</a>
             <input class="form-control form-control-dark w-100" type="text" placeholder="Поиск" aria-label="Search">
 
         <?php if (isset($_SESSION['logged_user']['login'])) : ?>
@@ -50,7 +50,7 @@
                         <li class="nav-item">
                             <a class="nav-link <?php echo ($current_url == $value['url']) ? 'active' : '' ;?>"
                                href="<?php echo $value['url'];?>">
-                               <i class="<?php echo $value['icon'];?>" aria-hidden="true"></i> 
+                               <i class="<?php echo $value['icon'];?>" aria-hidden="true"></i>  
                                <?php echo $value['title'];?>
                            </a>
                         </li>

@@ -9,10 +9,9 @@
   <label class="sr-only" for="password">Пароль</label>
   <input class="form-control mb-3" type="password" id="password" name="password" placeholder="Введите пароль" required>
 
-  <div class="checkbox checkbox-css mb-3">
-    <label>
-      <input type="checkbox" value="remember-me"> Запомни меня
-    </label>
+  <div class="custom-control custom-checkbox mb-3">
+    <input class="custom-control-input" type="checkbox" id="remember-me">
+    <label class="custom-control-label" for="remember-me">Запомни меня</label>
   </div>
 
   <button class="btn btn-lg btn-primary btn-block mb-3" type="submit">Войти</button>

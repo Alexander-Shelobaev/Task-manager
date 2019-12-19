@@ -9,8 +9,6 @@ class AccountController extends Controller
 
     /**
      * Регистрация пользователя
-     * 
-     * @return mixed
      */
     public function registerAction()
     {
@@ -48,26 +46,33 @@ class AccountController extends Controller
                 $user = $this->model->selectUser($params);
                 if ($user['login'] === $login) {
                     $_SESSION['error'] = 'Пользователь с таким логином уже существует';
-                    header("Location: /account/register");
-                    exit;
+                    $this->view->redirect('/account/register');
                 }
+
                 // Проверяем, что в БД нет пользователя с $email
                 $params = ['email' => $email];
                 $user = $this->model->selectEmail($params);
                 if ($user['email'] === $email) {
                     $_SESSION['error'] = 'Пользователь с таким E-mail уже существует';
-                    header("Location: /account/register");
-                    exit;
+                    $this->view->redirect('/account/register');
                 }
+
                 // Хэшируем пароль пользователя преред сохраниение в БД
                 $password = password_hash($password, PASSWORD_DEFAULT);
+
                 // Формируем ключ для активации аккаунта
                 $active_key = password_hash(mt_rand(), PASSWORD_DEFAULT);
+
                 // Сохраняем нового пользователя в БД
                 $params = ['login' => $login, 'email' => $email, 'password' => $password,
                            'active_key' => $active_key, 'active' => 0, 'name' => ''];
                 $result = $this->model->createUser($params);
+
+                // Если создание нового пользователя прошло успешно,
+                // формируем и отправляем пользователю письмо,
+                // иначе выводим ошибку
                 if ($result) {
+
                     // Формируем письмо
                     // Задаем получателя
                     $to = 'admin@task-manager.com';
@@ -84,17 +89,15 @@ class AccountController extends Controller
                     mail($to, $subject, $message, $headers);
                     // Выполняем переход на главную страницу
                     $_SESSION['success'] = 'Регистрация прошла успешно, Вам на почту отправленно письмо.';
-                    header("Location: /");
-                    exit;
+                    $this->view->redirect('/');
                 } else {
                     $_SESSION['error'] = 'При регистрации произошла ошибка.';
-                    header("Location: /account/register");
+                    $this->view->redirect('/account/register');
                 }
 
             } else {
                 $_SESSION['error'] = array_shift($errors);
-                header("Location: /account/register");
-                exit;
+                $this->view->redirect('/account/register');
             }
 
         }
@@ -112,11 +115,8 @@ class AccountController extends Controller
 
 
 
-
     /**
      * Аутентификация пользователя
-     * 
-     * @return mixed
      */
     public function loginAction()
     {
@@ -148,34 +148,30 @@ class AccountController extends Controller
                 $params = ['login' => $login];
                 $user = $this->model->selectUser($params);
                 if ($user['login'] === $login) {
+
                     // Если пользователь найден, то проверяем пароль
                     if (password_verify($password, $user['password'])) {
                         
                         if ($user['active'] == 1) {
                             // Аутентифицируем пользователя и переходим на главную страницу
                             $_SESSION['logged_user']['login'] = $user['login'];
-                            header("Location: /");
-                            exit;
+                            $this->view->redirect('/');
                         } else {
                             $_SESSION['error'] = 'Пользователь не активирован';
-                            header("Location: /account/sign-in");
-                            exit;
+                            $this->view->redirect('/account/sign-in');
                         }
                     } else {
                         $_SESSION['error'] = 'Введен не верный пароль';
-                        header("Location: /account/sign-in");
-                        exit;
+                        $this->view->redirect('/account/sign-in');
                     }
                 } else {
                     $_SESSION['error'] = 'Пользователь не найден';
-                    header("Location: /account/sign-in");
-                    exit;
+                    $this->view->redirect('/account/sign-in');
                 }
 
             } else {
                 $_SESSION['error'] = array_shift($errors);
-                header("Location: /account/sign-in");
-                exit;
+                $this->view->redirect('/account/sign-in');
             }
 
         }
@@ -192,11 +188,8 @@ class AccountController extends Controller
 
 
 
-
     /**
      * Восстановление пароля пользователя
-     * 
-     * @return mixed
      */
     public function resetAction()
     {
@@ -243,17 +236,14 @@ class AccountController extends Controller
                     // Отправляем письмо
                     mail($to, $subject, $message, $headers);
                     $_SESSION['success'] = 'Вам на почту отправленно письмо содержащее новый пароль.';
-                    header("Location: /account/sign-in");
-                    exit;
+                    $this->view->redirect('/account/sign-in');
                 } else {
                     $_SESSION['error'] = 'Пользователя с таким E-mail не существует';
-                    header("Location: /account/reset");
-                    exit;
+                    $this->view->redirect('/account/reset');
                 }
             } else {
                 $_SESSION['error'] = array_shift($errors);
-                header("Location: /account/reset");
-                exit;
+                $this->view->redirect('/account/reset');
             }
 
         }
@@ -270,11 +260,8 @@ class AccountController extends Controller
 
 
 
-
     /**
      * Активация пользователя
-     * 
-     * @return mixed
      */
     public function activeAction()
     {
@@ -284,21 +271,16 @@ class AccountController extends Controller
             $params = ['active' => $active, 'active_key' => $active_key];
             $user = $this->model->activeUser($params);
             $_SESSION['success'] = 'Активация прошла успешно.';
-            header("Location: /");
-            exit;
+            $this->view->redirect('/');
         }
         $_SESSION['error'] = 'Ошибка активации пользователя.';
-        header("Location: /");
-        exit;
+        $this->view->redirect('/');
     }
-
 
 
 
     /**
      * Выход из аккаунта пользователя
-     * 
-     * @return mixed
      */
     public function logoutAction()
     {

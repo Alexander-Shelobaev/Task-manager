@@ -18,8 +18,7 @@ class SeedController extends Controller
         $this->seed('account', '2019_12_08_1220_seedPermissionRole', 'createUserPermission');
 
         $_SESSION['success'] = 'Посев данных прошел успешно';
-        header("Location: /");
-        exit;
+        $this->view->redirect('/');
     }
 
     public function seed($name_model, $name_seed, $query_name)
@@ -34,8 +33,7 @@ class SeedController extends Controller
             $res = $model->$query_name($params);
             if (!$res) {
                 $_SESSION['error'] = 'Ошибка при добавлении записи';
-                header("Location: /");
-                exit;
+                $this->view->redirect('/');
             }
         }
     }

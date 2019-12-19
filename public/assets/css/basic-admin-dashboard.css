@@ -39,8 +39,12 @@ body {
 }
 
 .sidebar .nav-link {
-  font-weight: 500;
-  color: #333;
+  font-weight: 600;
+  color: #495057;
+}
+
+.sidebar .nav-link .fa{
+  padding-right: 3px;
 }
 
 .sidebar .nav-link .feather {
@@ -147,8 +151,11 @@ div.dataTables_wrapper div.dataTables_filter input {
 }
 
 table.table_sort th{
-  cursor: pointer;
   position: relative;
+}
+
+table.table_sort th a{
+  color: #495057;
 }
 
 table.table_sort th.sorting_asc:after,
@@ -185,3 +192,10 @@ table.table_sort th.sorting:after{
   content: '\f0dc';
 }
 
+.width-1{
+  width: 1%;
+}
+
+.btn-search{
+  border: 1px solid #ced4da;
+}
