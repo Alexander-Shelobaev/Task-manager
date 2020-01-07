@@ -3,7 +3,6 @@
 namespace app\controllers;
 
 use app\core\Controller;
-//use app\core\Db;
 
 class MigrationController extends Controller
 {

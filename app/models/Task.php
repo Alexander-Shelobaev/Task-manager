@@ -9,12 +9,12 @@ class Task extends Model
 
     public function getTasks($params, $sort)
     {   
-        $sql = "SELECT id as task_id, name, email, task_text, status, edited_by_admin FROM tasks";
-        $sql .= " WHERE name LIKE :where OR email LIKE :where OR task_text LIKE :where OR status LIKE :where";
+        $sql = 'SELECT id as task_id, name, email, task_text, status, edited_by_admin FROM tasks';
+        $sql .= ' WHERE name LIKE :where OR email LIKE :where OR task_text LIKE :where OR status LIKE :where';
         $sort = explode('-', $sort);
         $sql .= " ORDER BY $sort[0] $sort[1]";
-        //$sql .= " ORDER BY :sort_column :sort_key";
-        $sql .= " LIMIT :from,:limit"; // int
+        // $sql .= ' ORDER BY :sort_column :sort_key';
+        $sql .= ' LIMIT :from,:limit'; // int
         $result = self::$db->rows($sql, $params);
         return $result;
     }
@@ -22,7 +22,8 @@ class Task extends Model
     public function selectCountTasks($params)
     {
         $result = self::$db->row(
-            'SELECT COUNT(*) as tasks FROM tasks WHERE name LIKE :where OR email LIKE :where OR task_text LIKE :where OR status LIKE :where', $params
+            'SELECT COUNT(*) as tasks FROM tasks WHERE name LIKE :where OR email LIKE :where OR task_text
+             LIKE :where OR status LIKE :where', $params
         );
         return $result;
     }

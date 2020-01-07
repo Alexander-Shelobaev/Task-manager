@@ -5,4 +5,6 @@ function sendForm(e){
   if (val == '') {whereBox.value = '%%'}; 
 }
 var sendButton = document.getElementById("btnSearch");
-sendButton.addEventListener("click", sendForm);
+if (!!sendButton) {
+    sendButton.addEventListener("click", sendForm);
+}

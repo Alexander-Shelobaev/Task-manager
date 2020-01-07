@@ -2,14 +2,14 @@
 
 return [
 
-    // MainController
+    // Main
     '' => [
         'controller' => 'main',
         'action' => 'index',
     ],
     
 
-    // TaskController
+    // Task
     'tasks{sort:(\?[a-z]+\=[0-9a-z-%]+)?(\&?[a-z]+\=[0-9a-z-%]+)*}' => [
         'controller' => 'task',
         'action' => 'index',
@@ -36,7 +36,7 @@ return [
     ],
 
 
-    // AccountController
+    // Account
     'account/register' => [
         'controller' => 'account',
         'action' => 'register',

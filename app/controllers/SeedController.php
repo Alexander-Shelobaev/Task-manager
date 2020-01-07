@@ -7,6 +7,9 @@ use app\core\Controller;
 class SeedController extends Controller
 {
 
+    /**
+     * Последовательно запускает посевы в БД
+     */
     public function indexAction()
     {
         // Список посевов
@@ -21,6 +24,9 @@ class SeedController extends Controller
         $this->view->redirect('/');
     }
 
+    /**
+     * Выполнияет посев в БД
+     */
     public function seed($name_model, $name_seed, $query_name)
     {
         // Загружаем модель
